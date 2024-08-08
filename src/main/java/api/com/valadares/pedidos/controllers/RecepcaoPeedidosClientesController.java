@@ -28,7 +28,7 @@ public class RecepcaoPeedidosClientesController {
                 // this.usersRepository
         );
 
-        List<Pedido> processedPedidos = posterrService.createNewPost(pedidos);
-        return ResponseEntity.ok(processedPedidos);
+        List<Pedido> pedidosCriados  = pedidoService.criarPedidosClientes(pedidos);
+        return ResponseEntity.ok(pedidosCriados);
     }
 }
