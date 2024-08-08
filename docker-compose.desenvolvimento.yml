@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  api_pedidos_clientes:
+    container_name: container-api_pedidos_clientes
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # image: image-api_pedidos_clientes
+    # build: .
+    ports:
+      - 8080:8080
+      - 4443:443     
+    environment:
+      - MYSQL_DATABASE=${DATABASE_NAME}
+    networks:
+      - api-networks
+    depends_on:
+      - db_mysql
+
+
+  db_mysql:
+    image: mysql:8
+    container_name: mysql_banco_de_dados
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d    
+      - mysql_data:/var/lib/mysql:rw      
+    networks:
+      - api-networks      
+
+
+volumes:
+  mysql_data:
+
+networks:
+  api-networks:  
