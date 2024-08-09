@@ -5,13 +5,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import api.com.valadares.pedidos.entity.Pedido;
 import api.com.valadares.pedidos.exception.ExcecaoDeNegocio;
+import jakarta.transaction.Transactional;
 
 @Service
-public class PedidoService {
+@Transactional
+public class PedidoService{
+
+    @Autowired
+    private PedidoRepository pedidoRepository;
+
 
     /**
      * Cria pedidos considerando as regras de negócio:
@@ -82,10 +89,11 @@ public class PedidoService {
         });
 
 
-        List<Pedido> pedidosComNumerosDeControlesCadastrados = this.obterPedidosClientesComNumerosDeControlesCadastrados();
+        //List<Pedido> pedidosComNumerosDeControlesCadastrados = this.obterPedidosClientesComNumerosDeControlesCadastrados();
         //Não poderá aceitar um número de controle já cadastrado.
         //List<Pedido> pedidosComNumerosDeControlesNovos = this.obterPedidosClientesComNumerosDeControlesCadastrados();
 
+        pedidoRepository.saveAll(pedidos);
 
         return pedidos;
          
