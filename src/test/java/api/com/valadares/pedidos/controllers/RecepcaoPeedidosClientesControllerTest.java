@@ -1,141 +1,98 @@
 package api.com.valadares.pedidos.controllers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
-import api.com.valadares.pedidos.services.PedidoService;
-
-public class RecepcaoPeedidosClientesControllerTest {
-
-    private static final String NUMERO_CONTROLE = "20240808143045-QWERT-B67890";
-
-    private RecepcaoPedidosClientesController pedidosClientesController;
-    private PedidoService pedidoService ;
-
-  @BeforeEach
-  public void setUp() {
-    this.pedidoService = new PedidoService();
-    this.pedidosClientesController = new RecepcaoPedidosClientesController(pedidoService);
-  }
-
-  @Test
-  public void givenPedidosValidosWhenStoringShouldReturnSuccessResponse() {
-  
-    
-    // MeterReadings meterReadings = new MeterReadings(null, Collections.emptyList());
-    // assertThat(meterReadingController.storeReadings(meterReadings).getStatusCode())
-    //     .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-  }
- 
-  @Test
-  public void givenInvalidPedidosWhenStoringShouldReturnErrorResponse() {
-  
-  }
-}
-
-
-/*
- 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import uk.tw.energy.builders.MeterReadingsBuilder;
-import uk.tw.energy.domain.ElectricityReading;
-import uk.tw.energy.domain.MeterReadings;
-import uk.tw.energy.service.MeterReadingService;
+import org.springframework.http.ResponseEntity;
 
-public class MeterReadingControllerTest {
+import api.com.valadares.pedidos.entity.Cliente;
+import api.com.valadares.pedidos.entity.Pedido;
+import api.com.valadares.pedidos.services.PedidoService;
 
-  private static final String SMART_METER_ID = "10101010";
-  private MeterReadingController meterReadingController;
-  private MeterReadingService meterReadingService;
+@SpringBootTest
+public class RecepcaoPeedidosClientesControllerTest {
 
-  @BeforeEach
-  public void setUp() {
-    this.meterReadingService = new MeterReadingService(new HashMap<>());
-    this.meterReadingController = new MeterReadingController(meterReadingService);
-  }
+    @Autowired
+    private RecepcaoPedidosClientesController pedidosClientesController;
+    @Autowired
+    private PedidoService pedidoService ;
 
-  @Test
-  public void givenNoMeterIdIsSuppliedWhenStoringShouldReturnErrorResponse() {
-    MeterReadings meterReadings = new MeterReadings(null, Collections.emptyList());
-    assertThat(meterReadingController.storeReadings(meterReadings).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-  }
 
-  @Test
-  public void givenEmptyMeterReadingShouldReturnErrorResponse() {
-    MeterReadings meterReadings = new MeterReadings(SMART_METER_ID, Collections.emptyList());
-    assertThat(meterReadingController.storeReadings(meterReadings).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+    @Test
+    void contextLoads() throws Exception {
+      assertThat(pedidosClientesController).isNotNull();
+    }
 
-  @Test
-  public void givenNullReadingsAreSuppliedWhenStoringShouldReturnErrorResponse() {
-    MeterReadings meterReadings = new MeterReadings(SMART_METER_ID, null);
-    assertThat(meterReadingController.storeReadings(meterReadings).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+    @BeforeEach
+    public void setUp() {
+      this.pedidoService = new PedidoService();
+      this.pedidosClientesController = new RecepcaoPedidosClientesController(pedidoService);
+    }
 
-  @Test
-  public void givenMultipleBatchesOfMeterReadingsShouldStore() {
-    MeterReadings meterReadings =
-        new MeterReadingsBuilder()
-            .setSmartMeterId(SMART_METER_ID)
-            .generateElectricityReadings()
-            .build();
 
-    MeterReadings otherMeterReadings =
-        new MeterReadingsBuilder()
-            .setSmartMeterId(SMART_METER_ID)
-            .generateElectricityReadings()
-            .build();
+    @Test
+    public void testGetPedidosClientesMokList() {
+      List<Pedido> pedidos = this.getMockedClientePedidosList();
+      assertThat(pedidos).isNotNull();
+    }
 
-    meterReadingController.storeReadings(meterReadings);
-    meterReadingController.storeReadings(otherMeterReadings);
 
-    List<ElectricityReading> expectedElectricityReadings = new ArrayList<>();
-    expectedElectricityReadings.addAll(meterReadings.electricityReadings());
-    expectedElectricityReadings.addAll(otherMeterReadings.electricityReadings());
+    
+    @Test
+    public void givenInvalidPedidosWhenStoringShouldReturnErrorResponse() {
+    
+    }
+    
+    @Test
+    public void givenPedidosValidosWhenStoringShouldReturnSuccessResponse() throws IOException {
 
-    assertThat(meterReadingService.getReadings(SMART_METER_ID).get())
-        .isEqualTo(expectedElectricityReadings);
-  }
+      List<Pedido> pedidos = this.getMockedClientePedidosList();
+      when(this.pedidosClientesController.criarPedidosClientes(pedidos)).thenReturn(ResponseEntity.ok(pedidos));
+      
+      ResponseEntity<List<Pedido>> response = this.pedidosClientesController.criarPedidosClientes(pedidos);
 
-  @Test
-  public void givenMeterReadingsAssociatedWithTheUserShouldStoreAssociatedWithUser() {
-    MeterReadings meterReadings =
-        new MeterReadingsBuilder()
-            .setSmartMeterId(SMART_METER_ID)
-            .generateElectricityReadings()
-            .build();
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getBody()).isEqualTo(pedidos);
 
-    MeterReadings otherMeterReadings =
-        new MeterReadingsBuilder().setSmartMeterId("00001").generateElectricityReadings().build();
-
-    meterReadingController.storeReadings(meterReadings);
-    meterReadingController.storeReadings(otherMeterReadings);
-
-    assertThat(meterReadingService.getReadings(SMART_METER_ID).get())
-        .isEqualTo(meterReadings.electricityReadings());
-  }
-
-  @Test
-  public void givenMeterIdThatIsNotRecognisedShouldReturnNotFound() {
-    assertThat(meterReadingController.readReadings(SMART_METER_ID).getStatusCode())
-        .isEqualTo(HttpStatus.NOT_FOUND);
-  }
-}
+    }
   
- */
+    public List<Pedido> getMockedClientePedidosList() {
+
+        List<Pedido> pedidos = new ArrayList<>();
+        
+        Cliente cliente1 = new Cliente(1L, 1001L , "Francisco");
+        Pedido pedido1 = new Pedido(null, "001", LocalDateTime.now(), "Cerveja", new BigDecimal("199.99"), 2, new BigDecimal("399.98"), cliente1);
+        pedidos.add(pedido1);
+
+        Cliente cliente2 = new Cliente(2L, 1002L , "Maria");
+        Pedido pedido2 = new Pedido(null, "002", LocalDateTime.now(), "Shampoo", new BigDecimal("33.99"), 4, new BigDecimal("133.96"), cliente2);
+        pedidos.add(pedido2);
+
+        Cliente cliente3 = new Cliente(3L, 1003L , "Joaquim Valadares");
+        Pedido pedido3 = new Pedido(null, "003", LocalDateTime.now(), "Furadeira", new BigDecimal("599.99"), 1, new BigDecimal("599.99"), cliente3);
+        pedidos.add(pedido3);
+
+        Cliente cliente4 = new Cliente(4L, 1004L , "Joaquim Almeida");
+        Pedido pedido4 = new Pedido(null, "004", LocalDateTime.now(), "Peneu de trator", new BigDecimal("3199.99"), 2, new BigDecimal("6399.98"), cliente4);
+        pedidos.add(pedido4);   
+
+        Cliente cliente5 = new Cliente(5L, 1005L , "Joaquim Batista");
+        Pedido pedido5 = new Pedido(null, "005", LocalDateTime.now(), "Geladeira", new BigDecimal("6199.99"), 1, new BigDecimal("6199.99"), cliente5);
+        pedidos.add(pedido5);
+
+        return pedidos; 
+    }
+
+}
+

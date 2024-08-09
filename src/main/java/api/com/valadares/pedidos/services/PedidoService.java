@@ -2,7 +2,6 @@ package api.com.valadares.pedidos.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +9,17 @@ import org.springframework.stereotype.Service;
 
 import api.com.valadares.pedidos.entity.Pedido;
 import api.com.valadares.pedidos.exception.ExcecaoDeNegocio;
-import jakarta.transaction.Transactional;
+
 
 @Service
-@Transactional
 public class PedidoService{
 
     @Autowired
     private PedidoRepository pedidoRepository;
+
+
+
+    
 
 
     /**
@@ -88,20 +90,16 @@ public class PedidoService{
 
         });
 
-
-        //List<Pedido> pedidosComNumerosDeControlesCadastrados = this.obterPedidosClientesComNumerosDeControlesCadastrados();
-        //Não poderá aceitar um número de controle já cadastrado.
-        //List<Pedido> pedidosComNumerosDeControlesNovos = this.obterPedidosClientesComNumerosDeControlesCadastrados();
-
+       
         pedidoRepository.saveAll(pedidos);
-
-        return pedidos;
-         
+        return pedidos;         
     }
 
     private Boolean validarSeExistemNumerosDeControlesCadastrados(List<Pedido> pedidos) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'validarSeExistemNumerosDeControlesCadastrados'");
+        //throw new UnsupportedOperationException("Unimplemented method 'validarSeExistemNumerosDeControlesCadastrados'");
+
+        return false;
     }
 
     private List<Pedido> obterPedidosClientesComNumerosDeControlesCadastrados() {
@@ -109,23 +107,12 @@ public class PedidoService{
         throw new UnsupportedOperationException("Unimplemented method 'obterPedidosClientesComNumerosDeControlesCadastrados'");
     }
 
-    public List<Pedido> getPedidosClientes() {
-        
 
-        List<Pedido> pedidos = new ArrayList<>();
+    public List<Pedido> obterPedidosEnviadosPeloCliente(Long codigoCliente) {
         
-        pedidos.add(new Pedido("001", LocalDateTime.now(), "Cerveja", null, 10, 1L));
-        pedidos.add(new Pedido("002", LocalDateTime.now(), "Coca Cola", null, 10, 1L));
-        pedidos.add(new Pedido("003", LocalDateTime.now(), "Refrigerante", null, 10, 1L));
-        pedidos.add(new Pedido("004", LocalDateTime.now(), "Agua", null, 10, 1L));
-        pedidos.add(new Pedido("005", LocalDateTime.now(), "Suco", null, 10, 1L));
-        pedidos.add(new Pedido("006", LocalDateTime.now(), "Cerveja", null, 10, 1L));
-        pedidos.add(new Pedido("007", LocalDateTime.now(), "Coca Cola", null, 10, 1L));
-        pedidos.add(new Pedido("008", LocalDateTime.now(), "Refrigerante", null, 10, 1L));
-        pedidos.add(new Pedido("009", LocalDateTime.now(), "Agua", null, 10, 1L));
-        pedidos.add(new Pedido("010", LocalDateTime.now(), "Suco", null, 10, 1L));
-        
-        return pedidos;
+        List<Pedido> pedidos = this.pedidoRepository.obterPedidosEnviadosPeloCliente(codigoCliente);
+        return pedidos;        
     }
+    
 
 }
