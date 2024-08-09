@@ -24,15 +24,18 @@ public class RecepcaoPeedidosClientesControllerTest {
   }
 
   @Test
-  public void givenNoMeterIdIsSuppliedWhenStoringShouldReturnErrorResponse() {
-    //dadoPedidosValidosQuandoArmazenarDeveRetornarRespostaComSucesso
-    //givenValidPedidosWhenStoringShouldReturnSuccessResponse
+  public void givenPedidosValidosWhenStoringShouldReturnSuccessResponse() {
+  
+    
     // MeterReadings meterReadings = new MeterReadings(null, Collections.emptyList());
     // assertThat(meterReadingController.storeReadings(meterReadings).getStatusCode())
     //     .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
  
-  //givenInvalidPedidosWhenStoringShouldReturnErrorResponse
+  @Test
+  public void givenInvalidPedidosWhenStoringShouldReturnErrorResponse() {
+  
+  }
 }
 
 

@@ -31,7 +31,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./db-init:/docker-entrypoint-initdb.d    
+      - ./db-init:/docker-entrypoint-initdb.d:rw    
       - mysql_data:/var/lib/mysql:rw      
     networks:
       - api-networks      

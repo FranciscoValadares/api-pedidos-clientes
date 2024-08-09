@@ -9,7 +9,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-# build da aplicação
+RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
 
 # executação da aplicação

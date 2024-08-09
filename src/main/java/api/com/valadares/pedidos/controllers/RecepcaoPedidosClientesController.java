@@ -28,16 +28,14 @@ public class RecepcaoPedidosClientesController {
     // A anotação @RequestBody permite entradas em formatos JSON ou XML.
     @RequestMapping(value = "/api/criar-pedidos-clientes", method = RequestMethod.POST)
     public ResponseEntity<List<Pedido>> criarPedidosClientes(@RequestBody List<Pedido> pedidos) throws IOException {
+       
         List<Pedido> pedidosCriados  = pedidoService.criarPedidosClientes(pedidos);
         return ResponseEntity.ok(pedidosCriados);
     }
 
-    // gerar method get 
     @RequestMapping(value = "/api/pedidos-clientes", method = RequestMethod.GET)
     public List<Pedido> getPedidos() {
-
         return pedidoService.getPedidosClientes();
-
     }
 
 
