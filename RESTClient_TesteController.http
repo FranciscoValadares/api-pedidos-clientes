@@ -1,0 +1,91 @@
+### Para realizar os testes com este arquivo é necessário instalar o plugin REST Client do código do visual studio
+
+
+//Requests Test with REST Client.:  RecepcaoPedidosClientesController
+
+### //getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) 
+GET http://localhost:8080/api/pedidos-enviados-pelo-cliente
+
+
+### //getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) 
+GET http://localhost:8080/api/pedidos-clientes
+
+
+### //criarPedidosClientes(@RequestBody List<Pedido> pedidos)
+POST  http://localhost:8080/api/criar-pedidos-clientes HTTP/1.1
+Content-type: application/json
+[
+    {
+        "id": null,
+        "numeroControle": "001",
+        "dataCadastro": "2024-08-09T19:44:43.387796712",
+        "nomeProduto": "Cerveja",
+        "valorProduto": 199.99,
+        "quantidadeProduto": 2,
+        "valorTotal": 399.98,
+        "cliente": {
+            "id": 1,
+            "codigo": 1001,
+            "nome": "Francisco"
+        }
+    },
+    {
+        "id": null,
+        "numeroControle": "002",
+        "dataCadastro": "2024-08-09T19:44:43.387872773",
+        "nomeProduto": "Shampoo",
+        "valorProduto": 33.99,
+        "quantidadeProduto": 4,
+        "valorTotal": 133.96,
+        "cliente": {
+            "id": 2,
+            "codigo": 1002,
+            "nome": "Maria"
+        }
+    },
+    {
+        "id": null,
+        "numeroControle": "003",
+        "dataCadastro": "2024-08-09T19:44:43.387894363",
+        "nomeProduto": "Furadeira",
+        "valorProduto": 599.99,
+        "quantidadeProduto": 1,
+        "valorTotal": 599.99,
+        "cliente": {
+            "id": 3,
+            "codigo": 1003,
+            "nome": "Joaquim Valadares"
+        }
+    },
+    {
+        "id": null,
+        "numeroControle": "004",
+        "dataCadastro": "2024-08-09T19:44:43.387913778",
+        "nomeProduto": "Peneu de trator",
+        "valorProduto": 3199.99,
+        "quantidadeProduto": 2,
+        "valorTotal": 6399.98,
+        "cliente": {
+            "id": 4,
+            "codigo": 1004,
+            "nome": "Joaquim Almeida"
+        }
+    },
+    {
+        "id": null,
+        "numeroControle": "005",
+        "dataCadastro": "2024-08-09T19:44:43.387932787",
+        "nomeProduto": "Geladeira",
+        "valorProduto": 6199.99,
+        "quantidadeProduto": 1,
+        "valorTotal": 6199.99,
+        "cliente": {
+            "id": 5,
+            "codigo": 1005,
+            "nome": "Joaquim Batista"
+        }
+    }
+]
+ 
+ 
+ 
