@@ -34,10 +34,10 @@ public class Pedido {
     @Column(name = "quantidade_produto", nullable = false)
     private int quantidadeProduto;
 
-    @Column(name = "valor_total", nullable = false, precision = 10, scale = 2)
+    @Column(name = "valor_total", nullable = true, precision = 10, scale = 2)
     private BigDecimal valorTotal;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente cliente;
 }

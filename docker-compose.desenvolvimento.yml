@@ -2,7 +2,6 @@ services:
 
   mysql_banco_de_dados:
     image: mysql:8.0
-    # container_name: mysql_banco_de_dados
     environment:
       MYSQL_DATABASE: ${DATABASE_NAME}
       MYSQL_USER: ${DATABASE_USER}
@@ -25,9 +24,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
-    # image: image-api_pedidos_clientes
-    # build: .
     ports:
       - 8080:8080
       - 4443:443     

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS pedido (
     nome_produto VARCHAR(255) NOT NULL,
     valor_produto DECIMAL(10, 2) NOT NULL,
     quantidade_produto INT NOT NULL,
-    valor_total DECIMAL(10, 2) NOT NULL,
-    cliente_id BIGINT,
+    valor_total DECIMAL(10, 2),
+    cliente_id BIGINT NOT NULL,
     FOREIGN KEY (cliente_id) REFERENCES cliente(id)
 );

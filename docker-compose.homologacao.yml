@@ -1,39 +1,49 @@
-
 services:
-  api_pedidos_clientes:
-    container_name: container-api_pedidos_clientes
-    image: image-api_pedidos_clientes
-    build: docker
-    ports:
-      - 8080:80
-      - 4443:443     
-    environment:
-      - POSTGRES_DB=posterr_db
-    networks:
-      - api-networks
-    depends_on:
-      - db_mysql
 
-
-  db_mysql:
-    image: mysql:8
-    container_name: mysql_banco_de_dados
+  mysql_banco_de_dados:
+    image: mysql:8.0
     environment:
       MYSQL_DATABASE: ${DATABASE_NAME}
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-    # ports:
-    #   - "3306:3306"
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
-      - ./app/db-init:/docker-entrypoint-initdb.d    
-      - mysql_data:/var/lib/mysql:rw      
+      - pedidos_clientes_data:/var/lib/mysql:rw
     networks:
-      - api-networks      
+      - mysql-network
+
+  api_pedidos_clientes:
+    container_name: container-api_pedidos_clientes
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+      - 4443:443     
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+
+    depends_on:
+      mysql_banco_de_dados:
+        condition: service_healthy
+
+    networks:
+      - mysql-network
 
 
 volumes:
-  mysql_data:
-
+  pedidos_clientes_data:
+ 
 networks:
-  api-networks:  
+  mysql-network:
+    driver: bridge

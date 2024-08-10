@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.com.valadares.pedidos.entity.Cliente;
@@ -37,7 +39,6 @@ public class RecepcaoPedidosClientesController<T> {
      * Lista de pedidos pode conter 1 ou mais pedidos, limitado a 10.
      * Cada pedido tem que ter pelo menos um item, limitado a 10.
      * Caso a data de cadastro não seja enviada o sistema deve assumir a data atual.
-     * Caso o cliente não seja informado o sistema deve assumir o cliente 1.
      * Caso a quantidade não seja enviada considerar 1.
      * Caso a quantidade seja maior que 5 aplicar 5% de desconto no valor total, para quantidades a partir de
      * 10 aplicar 10% de desconto no valor total.
@@ -63,6 +64,8 @@ public class RecepcaoPedidosClientesController<T> {
 
     /***
      * Obtem os pedidos enviados pelo cliente a partir do código do cliente.
+     * Critérios aceitação:
+     * O retorno deve trazer todos os dados do pedido.
      * @param codigoCliente
      * @return
      * @throws IOException
@@ -78,6 +81,51 @@ public class RecepcaoPedidosClientesController<T> {
         }
         
     }
+
+
+    /***
+     * filtros da consulta:
+     * Retorna os pedidos pelo número pedido, data cadastro ou todos
+     * @param numeroPedido (numeroControle)
+     * @param dataCadastro
+     * @param getTodos
+     * @return
+     */
+    @GetMapping("/filtro-de-consulta")
+    public ResponseEntity<T> getByNumeroControleOuDataCadastroOuTodos(
+            @RequestParam(required = false) String numeroPedido,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataCadastro,
+            @RequestParam(required = false) Boolean getTodos) {
+
+        List<Pedido> pedidos = new ArrayList<>();
+
+        try {
+        
+            if(getTodos) {
+                pedidos = pedidoService.findAll();
+                return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
+            }
+    
+            if (numeroPedido != null && dataCadastro != null) {
+                pedidos = pedidoService.findByNumeroControleAndDataCadastro(numeroPedido, dataCadastro);
+            } else if (numeroPedido != null) {
+                pedidos = pedidoService.findByNumeroControle(numeroPedido);
+            } else if (dataCadastro != null) {
+                pedidos = pedidoService.findByDataCadastro(dataCadastro);
+            } 
+    
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
+            
+
+        } catch (Exception e) {
+            return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        
+    }
+
+
+
+
 
     /**
      * Metodo auxiliar para fazer Mock dos pedidos.
