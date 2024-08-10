@@ -50,7 +50,7 @@ public class RecepcaoPeedidosClientesControllerTest {
     
     @Test
     public void givenInvalidPedidosWhenStoringShouldReturnErrorResponse() {
-    
+      // TODO implementar lógica de testes
     }
     
     @Test

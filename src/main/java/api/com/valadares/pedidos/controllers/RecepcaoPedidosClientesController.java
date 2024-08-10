@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.com.valadares.pedidos.entity.Cliente;
@@ -21,7 +23,7 @@ import api.com.valadares.pedidos.services.PedidoService;
 
 @RestController
 @RequestMapping("/api")
-public class RecepcaoPedidosClientesController {
+public class RecepcaoPedidosClientesController<T> {
 
     private final PedidoService pedidoService;
 
@@ -31,24 +33,106 @@ public class RecepcaoPedidosClientesController {
     }
 
     
-    // A anotação @RequestBody permite entradas em formatos JSON ou XML.
-
+    
+    /**
+     * Cria pedidos considerando as regras de negócio:
+     * Lista de pedidos pode conter 1 ou mais pedidos, limitado a 10.
+     * Cada pedido tem que ter pelo menos um item, limitado a 10.
+     * Caso a data de cadastro não seja enviada o sistema deve assumir a data atual.
+     * Caso a quantidade não seja enviada considerar 1.
+     * Caso a quantidade seja maior que 5 aplicar 5% de desconto no valor total, para quantidades a partir de
+     * 10 aplicar 10% de desconto no valor total.
+     * O sistema deve calcular e gravar o valor total do pedido.
+     * Assumir que há 10 clientes cadastrados, com códigos de 1 a 10.
+     * 
+     * A anotação @RequestBody permite entradas em formatos JSON ou XML.
+     * @param List<Pedido> pedidos
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/criar-pedidos-clientes")
-    public ResponseEntity<List<Pedido>> criarPedidosClientes(@RequestBody List<Pedido> pedidos) throws IOException {
+    public ResponseEntity<T> criarPedidosClientes(@RequestBody List<Pedido> pedidos) throws IOException {
 
-        List<Pedido> pedidosCriados  = pedidoService.criarPedidosClientes(pedidos);
-        return ResponseEntity.ok(pedidosCriados);
-    }
-
-    @GetMapping("/pedidos-enviados-pelo-cliente")
-    public ResponseEntity<List<Pedido>> getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) throws IOException {
+        try {
+            List<Pedido> pedidosCriados  = pedidoService.criarPedidosClientes(pedidos);
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidosCriados);    
+        } catch (Exception e) {
+            return (ResponseEntity<T>)ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CRIAR_PEDIDOS_CLIENTES:" + e.getMessage());
+        }
         
-        List<Pedido> pedidos = pedidoService.obterPedidosEnviadosPeloCliente(codigoCliente);
-        return ResponseEntity.ok(pedidos);
     }
 
+    /***
+     * Obtem os pedidos enviados pelo cliente a partir do código do cliente.
+     * Critérios aceitação:
+     * O retorno deve trazer todos os dados do pedido.
+     * @param codigoCliente
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/pedidos-enviados-pelo-cliente")
+    public ResponseEntity<T> getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) throws IOException {
+        
+        try {
+            List<Pedido> pedidos = pedidoService.obterPedidosEnviadosPeloCliente(codigoCliente);
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
+        } catch (Exception e) {
+            return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CONSULTAR_CLIENTES:" + e.getMessage());
+        }
+        
+    }
+
+
+    /***
+     * filtros da consulta:
+     * Retorna os pedidos pelo número pedido, data cadastro ou todos
+     * @param numeroPedido (numeroControle)
+     * @param dataCadastro
+     * @param getTodos
+     * @return
+     */
+    @GetMapping("/filtro-de-consulta")
+    public ResponseEntity<T> getByNumeroControleOuDataCadastroOuTodos(
+            @RequestParam(required = false) String numeroPedido,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataCadastro,
+            @RequestParam(required = false) Boolean getTodos) {
+
+        List<Pedido> pedidos = new ArrayList<>();
+
+        try {
+        
+            if(getTodos) {
+                pedidos = pedidoService.findAll();
+                return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
+            }
+    
+            if (numeroPedido != null && dataCadastro != null) {
+                pedidos = pedidoService.findByNumeroControleAndDataCadastro(numeroPedido, dataCadastro);
+            } else if (numeroPedido != null) {
+                pedidos = pedidoService.findByNumeroControle(numeroPedido);
+            } else if (dataCadastro != null) {
+                pedidos = pedidoService.findByDataCadastro(dataCadastro);
+            } 
+    
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
+            
+
+        } catch (Exception e) {
+            return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        
+    }
+
+
+
+
+
+    /**
+     * Metodo auxiliar para fazer Mock dos pedidos.
+     * @return
+     */
     @GetMapping("/pedidos-clientes")
-    public List<Pedido> getPedidos() {
+    public List<Pedido> getMockedClientePedidosList() {
         
 
         List<Pedido> pedidos = new ArrayList<>();
@@ -75,7 +159,6 @@ public class RecepcaoPedidosClientesController {
 
         return pedidos; 
         
-        //return pedidoService.getMockedClientePedidosList();
     }
 
 

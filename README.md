@@ -1,4 +1,4 @@
-# Francisco Valadares
+# Recepção de Pedidos
 
 ## Visão Geral
 
@@ -46,7 +46,7 @@ codigo cliente - identificação numérica do cliente.
   <p>
   <b>Esses requisitos estão presentes em :</b> 
 
-[criarPedidosClientes(@RequestBody List<Pedido> pedidos)](./src/main/java/api/com/valadares/pedidos/controllers/RecepcaoPedidosClientesController.java)
+[criarPedidosClientes(@RequestBody List<Pedido> pedidos)](./src/main/java/api/com/valadares/pedidos/controllers/RecepcaoPedidosClientesController.java#criarPedidosClientes)
 
  <br/>
 
@@ -69,13 +69,28 @@ O sistema deve calcular e gravar o valor total do pedido.
  <br/>
 
 
-<li>Criar um serviço onde possa consultar os pedidos enviados pelos clientes.
+<li>Criar um serviço onde possa consultar os pedidos enviados pelos clientes.<p>
 Critérios aceitação:<p>
 O retorno deve trazer todos os dados do pedido.<p>
   <b>Esses requisitos estão presentes em:</b>
   
-[public List<Pedido> obterPedidosEnviadosPeloCliente(Long codigoCliente)](./src/main/java/api/com/valadares/pedidos/services/PedidoService.java#obterPedidosEnviadosPeloCliente) 
 
-<br/>
+[getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente)](./src/main/java/api/com/valadares/pedidos/controllers/RecepcaoPedidosClientesController.java#getPedidosEnviadosPeloCliente)
+
+ <br/>
+
+
+<li> Implementacao do filtros da consulta:<p>
+número pedido, data cadastro, todos
 
  
+
+<li>O script de criação das tabelas esta presentes em: 
+
+[Script criacao das tabelas](./src/main/resources/db/migration/V1__Initial_setup.sql)
+
+
+<li>O diagrama/modelo do banco de dados: 
+
+![MER - pedidos_clientes](./src/main/resources/diagrama/Diagrama-pedido-cliente.png)
+
