@@ -1,4 +1,25 @@
 services:
+
+  mysql_banco_de_dados:
+    image: mysql:8.0
+    # container_name: mysql_banco_de_dados
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pedidos_clientes_data:/var/lib/mysql:rw
+    networks:
+      - mysql-network
+
   api_pedidos_clientes:
     container_name: container-api_pedidos_clientes
     build:
@@ -11,31 +32,22 @@ services:
       - 8080:8080
       - 4443:443     
     environment:
-      - MYSQL_DATABASE=${DATABASE_NAME}
-      - MYSQL_USER=${DATABASE_USER}
-      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
- 
-    depends_on:
-      - db_mysql
-
-
-  db_mysql:
-    image: mysql:8.0.26
-
-    container_name: mysql_banco_de_dados
-
-    environment:
       MYSQL_DATABASE: ${DATABASE_NAME}
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-    # ports:
-    #   - 3306:3306
-    volumes:
-      - pedidos_clientes_data:/var/lib/mysql:rw
- 
+
+    depends_on:
+      mysql_banco_de_dados:
+        condition: service_healthy
+
+    networks:
+      - mysql-network
+
 
 volumes:
   pedidos_clientes_data:
  
+networks:
+  mysql-network:
+    driver: bridge
