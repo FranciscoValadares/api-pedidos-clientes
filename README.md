@@ -34,12 +34,12 @@ A solução é em java em formato de API e atende aos seguintes requisitos para 
 
 
 ### <b>Necessidades para criar os pedidos</b>
-<li> Criar um serviço que receba pedidos no formato xml e json com 6 campos:
-número controle - número aleatório informado pelo cliente.
-data cadastro (opcional) 
-nome - nome do produto
-valor - valor monetário unitário produto
-quantidade (opcional) - quantidade de produtos.
+<li> Criar um serviço que receba pedidos no formato xml e json com 6 campos:<p>
+número controle - número aleatório informado pelo cliente.<p>
+data cadastro (opcional) <p>
+nome - nome do produto<p>
+valor - valor monetário unitário produto<p>
+quantidade (opcional) - quantidade de produtos.<p>
 codigo cliente - identificação numérica do cliente.
   <br/>
   <br/>

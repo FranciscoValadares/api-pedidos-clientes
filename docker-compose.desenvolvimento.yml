@@ -21,7 +21,8 @@ services:
 
 
   db_mysql:
-    image: mysql:8
+    image: mysql:8.0.26
+
     container_name: mysql_banco_de_dados
 
     environment:
@@ -29,10 +30,10 @@ services:
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-    # ports:
-    #   - 3306:3306
+    ports:
+      - 3306:3306
     volumes:
-      - ./db-init:/docker-entrypoint-initdb.d:rw
+      - ./db-init:/docker-entrypoint-initdb.d
       - pedidos_clientes_data:/var/lib/mysql:rw
  
 
