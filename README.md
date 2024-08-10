@@ -79,3 +79,7 @@ O retorno deve trazer todos os dados do pedido.<p>
 <br/>
 
  
+
+<li>O script de criação das tabelas esta presentes em: 
+
+[Script criacao das tabelas](./src/main/resources/db/migration/V1__Initial_setup.sql)

@@ -60,7 +60,7 @@ public class PedidoService{
 
         //4# Caso a quantidade não seja enviada considerar 1.
         pedidos.forEach(pedido -> {
-            if (pedido.getQuantidadeProduto() == null) {
+            if (pedido.getQuantidadeProduto() == 0) {
                 pedido.setQuantidadeProduto(1);
             }
         });

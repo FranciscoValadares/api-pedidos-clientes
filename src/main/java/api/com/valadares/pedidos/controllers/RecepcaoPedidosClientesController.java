@@ -21,7 +21,7 @@ import api.com.valadares.pedidos.services.PedidoService;
 
 @RestController
 @RequestMapping("/api")
-public class RecepcaoPedidosClientesController {
+public class RecepcaoPedidosClientesController<T> {
 
     private final PedidoService pedidoService;
 
@@ -50,13 +50,13 @@ public class RecepcaoPedidosClientesController {
      * @throws IOException
      */
     @PostMapping("/criar-pedidos-clientes")
-    public ResponseEntity<?> criarPedidosClientes(@RequestBody List<Pedido> pedidos) throws IOException {
+    public ResponseEntity<T> criarPedidosClientes(@RequestBody List<Pedido> pedidos) throws IOException {
 
         try {
             List<Pedido> pedidosCriados  = pedidoService.criarPedidosClientes(pedidos);
-            return ResponseEntity.ok(pedidosCriados);    
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidosCriados);    
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CRIAR_PEDIDOS_CLIENTES:" + e.getMessage());
+            return (ResponseEntity<T>)ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CRIAR_PEDIDOS_CLIENTES:" + e.getMessage());
         }
         
     }
@@ -68,13 +68,13 @@ public class RecepcaoPedidosClientesController {
      * @throws IOException
      */
     @GetMapping("/pedidos-enviados-pelo-cliente")
-    public ResponseEntity<?> getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) throws IOException {
+    public ResponseEntity<T> getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) throws IOException {
         
         try {
             List<Pedido> pedidos = pedidoService.obterPedidosEnviadosPeloCliente(codigoCliente);
-            return ResponseEntity.ok(pedidos);
+            return (ResponseEntity<T>) ResponseEntity.ok(pedidos);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CONSULTAR_CLIENTES:" + e.getMessage());
+            return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERRO_AO_CONSULTAR_CLIENTES:" + e.getMessage());
         }
         
     }
