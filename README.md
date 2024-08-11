@@ -80,7 +80,7 @@ O retorno deve trazer todos os dados do pedido.<p>
  <br/>
 
 
-<li> Implementacao do filtros da consulta:<p>
+<li> Implementacao dos filtros da consulta:<p>
 número pedido, data cadastro, todos
 
  
