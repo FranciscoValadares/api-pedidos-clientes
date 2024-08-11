@@ -69,9 +69,11 @@ public class RecepcaoPedidosClientesController<T> {
      * @param codigoCliente
      * @return
      * @throws IOException
+     * @RequestParam(required = false) String numeroPedido,     @RequestParam Long codigoCliente,
+
      */
     @GetMapping("/pedidos-enviados-pelo-cliente")
-    public ResponseEntity<T> getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) throws IOException {
+    public ResponseEntity<T> getPedidosEnviadosPeloCliente(@RequestParam Long codigoCliente) throws IOException {
         
         try {
             List<Pedido> pedidos = pedidoService.obterPedidosEnviadosPeloCliente(codigoCliente);
