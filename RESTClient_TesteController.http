@@ -3,17 +3,19 @@
 
 //Requests Test with REST Client.:  RecepcaoPedidosClientesController
 
-### //getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) 
-GET http://localhost:8080/api/pedidos-enviados-pelo-cliente
+### getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) 
+GET http://localhost:8080/api/pedidos-enviados-pelo-cliente?codigoCliente=1
+
+###
+GET http://localhost:8080/api/filtro-de-consulta?getTodos=true
 
 
-### //getPedidosEnviadosPeloCliente(@RequestBody Long codigoCliente) 
-GET http://localhost:8080/api/pedidos-clientes
+ 
 
-
-### //criarPedidosClientes(@RequestBody List<Pedido> pedidos)
-POST  http://localhost:8080/api/criar-pedidos-clientes HTTP/1.1
+### criarPedidosClientes(@RequestBody List<Pedido> pedidos)
+POST http://localhost:8080/api/criar-pedidos-clientes HTTP/1.1
 Content-type: application/json
+
 [
     {
         "id": null,
@@ -86,6 +88,6 @@ Content-type: application/json
         }
     }
 ]
+
  
- 
- 
+###
